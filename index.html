@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CineTech - Sua Plataforma de Entretenimento</title>
+    <link rel="stylesheet" href="./assets/css/style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body>
+    <!-- Navegação -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">CineTech</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" onclick="carregarFilmes()">Lançamentos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" onclick="carregarFilmes()">Filmes</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/assets/admin/index.html">Administração</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="categoriasDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false"
+                           onmouseover="carregarCategorias()">Categorias</a>
+                        <ul class="dropdown-menu" id="categorias-list">
+                            <!-- Categorias dinâmicas -->
+                        </ul>
+                    </li>
+                </ul>
+                <!-- Campo de busca -->
+                <form class="d-flex ms-3" id="form-pesquisa" onsubmit="pesquisarFilmes(event)">
+                    <input class="form-control me-2" type="search" id="busca" placeholder="Pesquisar">
+                    <button class="btn btn-outline-success" type="submit">Buscar</button>
+                </form>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Conteúdo Principal -->
+    <div class="container mt-4">
+        <div id="filmes-container" class="row">
+            <!-- Filmes serão carregados dinamicamente -->
+        </div>
+    </div>
+
+    <!-- Inclusão de Scripts -->
+    <script src="./assets/js/script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

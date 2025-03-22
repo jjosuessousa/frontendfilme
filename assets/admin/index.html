@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administração - CineTech</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center">Administração - Gerenciar Filmes e Gêneros</h1>
+
+        <!-- Formulário para Cadastro ou Atualização -->
+        <div class="mt-5">
+            <h2>Cadastrar/Atualizar Filme</h2>
+            <form id="form-filme" enctype="multipart/form-data">
+                <input type="hidden" id="id" name="id"> <!-- Campo oculto para o ID do filme -->
+                <div class="mb-3">
+                    <label for="titulo" class="form-label">Título</label>
+                    <input type="text" class="form-control" id="titulo" name="titulo" required>
+                </div>
+                <div class="mb-3">
+                    <label for="sinopse" class="form-label">Sinopse</label>
+                    <textarea class="form-control" id="sinopse" name="sinopse" required></textarea>
+                </div>
+                <div class="mb-3">
+                    <label for="genero" class="form-label">Gênero</label>
+                    <select class="form-control" id="genero" name="genero" required></select>
+                </div>
+                <div class="mb-3">
+                    <label for="trailer" class="form-label">Trailer (URL)</label>
+                    <input type="url" class="form-control" id="trailer" name="trailer" required>
+                </div>
+                <div class="mb-3">
+                    <label for="lancamento" class="form-label">Data de Lançamento</label>
+                    <input type="date" class="form-control" id="lancamento" name="lancamento" required>
+                </div>
+                <div class="mb-3">
+                    <label for="duracao" class="form-label">Duração (minutos)</label>
+                    <input type="number" class="form-control" id="duracao" name="duracao" required>
+                </div>
+                <div class="mb-3">
+                    <label for="capa" class="form-label">Capa do Filme</label>
+                    <input type="file" class="form-control" id="capa" name="capa" accept="image/*">
+                </div>
+                <button type="submit" class="btn btn-success">Salvar</button>
+            </form>
+        </div>
+
+        <!-- Listagem de Filmes -->
+        <div class="mt-5">
+            <h2>Lista de Filmes</h2>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Título</th>
+                        <th>Gênero</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="tabela-filmes">
+                    <!-- Filmes serão inseridos aqui -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            carregarFilmes();
+            carregarGeneros();
+        });
+
+        async function carregarFilmes() {
+            try {
+                const resposta = await fetch('http://localhost/filmes/public/?rota=filmes');
+                if (!resposta.ok) throw new Error("Erro ao carregar filmes.");
+
+                const filmes = await resposta.json();
+                const tabela = document.getElementById('tabela-filmes');
+                tabela.innerHTML = '';
+
+                filmes.forEach(filme => {
+                    const linha = `
+                        <tr>
+                            <td>${filme.id}</td>
+                            <td>${filme.titulo}</td>
+                            <td>${filme.genero_nome || 'Sem Gênero'}</td>
+                            <td>
+                                <button class="btn btn-warning" onclick="editarFilme(${filme.id})">Editar</button>
+                                <button class="btn btn-danger" onclick="excluirFilme(${filme.id})">Excluir</button>
+                            </td>
+                        </tr>`;
+                    tabela.innerHTML += linha;
+                });
+            } catch (erro) {
+                console.error(erro.message);
+                alert("Erro ao carregar a lista de filmes.");
+            }
+        }
+
+        async function carregarGeneros() {
+            try {
+                const resposta = await fetch('http://localhost/filmes/public/?rota=generos');
+                if (!resposta.ok) throw new Error("Erro ao carregar gêneros.");
+
+                const generos = await resposta.json();
+                const select = document.getElementById('genero');
+                select.innerHTML = '';
+
+                generos.forEach(genero => {
+                    const option = `<option value="${genero.id}">${genero.nome}</option>`;
+                    select.innerHTML += option;
+                });
+            } catch (erro) {
+                console.error(erro.message);
+                alert("Erro ao carregar os gêneros.");
+            }
+        }
+
+        // Função para salvar o filme
+        async function salvarFilme(event) {
+            event.preventDefault();
+
+            const form = document.getElementById('form-filme');
+            const formData = new FormData(form);
+
+            try {
+                const id = document.getElementById('id').value; // Verifica se é edição
+                const rota = id ? 'filmes/atualizar' : 'filmes';
+
+                const resposta = await fetch(`http://localhost/filmes/public/?rota=${rota}`, {
+                    method: 'POST',
+                    body: formData,
+                });
+
+                if (!resposta.ok) {
+                    const mensagemErro = await resposta.text();
+                    throw new Error(mensagemErro);
+                }
+
+                const resultado = await resposta.json();
+                alert(resultado.message);
+                form.reset();
+                carregarFilmes();
+            } catch (erro) {
+                console.error(erro.message);
+                alert("Erro ao salvar o filme: " + erro.message);
+            }
+        }
+
+        // Função para editar o filme
+        async function editarFilme(id) {
+            try {
+                const resposta = await fetch(`http://localhost/filmes/public/?rota=filmes/detalhes&id=${id}`);
+                if (!resposta.ok) throw new Error("Erro ao buscar detalhes do filme.");
+
+                const filme = await resposta.json();
+
+                // Preenche os campos com os dados do filme
+                document.getElementById('id').value = filme.id;
+                document.getElementById('titulo').value = filme.titulo;
+                document.getElementById('sinopse').value = filme.sinopse;
+                document.getElementById('genero').value = filme.genero_id;
+                document.getElementById('trailer').value = filme.trailer;
+                document.getElementById('lancamento').value = filme.lancamento;
+                document.getElementById('duracao').value = filme.duracao;
+            } catch (erro) {
+                console.error(erro.message);
+                alert("Erro ao carregar os dados para edição.");
+            }
+        }
+
+        // Função para excluir o filme
+        async function excluirFilme(id) {
+            try {
+                const resposta = await fetch(`http://localhost/filmes/public/?rota=filmes/excluir&id=${id}`, {
+                    method: 'GET',
+                });
+
+                if (!resposta.ok) {
+                    const mensagemErro = await resposta.text();
+                    throw new Error(mensagemErro);
+                }
+
+                const resultado = await resposta.json();
+                alert(resultado.message);
+                carregarFilmes();
+            } catch (erro) {
+                console.error(erro.message);
+                alert("Erro ao excluir o filme: " + erro.message);
+            }
+        }
+
+        document.getElementById('form-filme').addEventListener('submit', salvarFilme);
+    </script>
+</body>
+</html>
