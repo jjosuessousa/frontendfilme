@@ -9,39 +9,26 @@ body {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
-h1 {
+h1, h2 {
     color: #333;
+}
+
+.btn {
+    margin-right: 10px;
 }
 
 .filme-item {
     border: 1px solid #ddd;
     padding: 15px;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
     border-radius: 5px;
     background-color: #f9f9f9;
 }
 
-.filme-item img {
-    max-width: 100%;
-    height: auto;
-    border-radius: 5px;
-}
-
 .filme-item h3 {
     margin-top: 0;
-    color: #555;
 }
 
 .filme-item p {
-    margin: 5px 0;
-    color: #777;
-}
-
-.filme-item a {
-    color: #007bff;
-    text-decoration: none;
-}
-
-.filme-item a:hover {
-    text-decoration: underline;
+    margin-bottom: 5px;
 }
