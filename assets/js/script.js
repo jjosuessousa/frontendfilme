@@ -17,9 +17,12 @@ document.getElementById("menu-toggle").addEventListener("click", function() {
 document.addEventListener('DOMContentLoaded', function () {
     const apiUrl = 'http://localhost/backend_filme/public'; // URL base da API
     const filmesList = document.getElementById('filmes-list');
+    const categoriasContainer = document.getElementById('categorias-container');
 
     // Função para carregar os filmes
     function carregarFilmes() {
+        filmesList.innerHTML = '<div class="col-12 text-center"><div class="spinner-border text-primary" role="status"></div></div>';
+        
         fetch(`${apiUrl}/listar-filme`)
             .then(response => {
                 if (!response.ok) {
@@ -29,28 +32,81 @@ document.addEventListener('DOMContentLoaded', function () {
             })
             .then(data => {
                 if (data.length > 0) {
-                    let html = '';
-                    data.forEach(filme => {
-                        html += `
-                            <div class="col-md-4">
-                                <div class="filme-item">
-                                    <img src="${filme.capa}" alt="${filme.titulo}" class="img-fluid mb-3">
-                                    <h3>${filme.titulo}</h3>
-                                    <p><strong>Sinopse:</strong> ${filme.sinopse}</p>
-                                    <p><strong>Categoria:</strong> ${filme.categoria}</p>
-                                    <a href="${filme.trailer}" target="_blank" class="btn btn-primary">Assistir Trailer</a>
-                                </div>
-                            </div>
-                        `;
-                    });
-                    filmesList.innerHTML = html;
+                    exibirFilmes(data);
                 } else {
-                    filmesList.innerHTML = '<p class="text-white">Nenhum filme encontrado.</p>';
+                    filmesList.innerHTML = '<div class="col-12 text-center text-white py-5"><h4>Nenhum filme encontrado</h4></div>';
                 }
             })
             .catch(error => {
                 console.error('Erro ao carregar filmes:', error);
-                filmesList.innerHTML = `<p class="text-white">Erro ao carregar filmes: ${error.message}</p>`;
+                filmesList.innerHTML = `
+                    <div class="col-12 text-center text-danger py-5">
+                        <i class="fas fa-exclamation-triangle fa-2x mb-3"></i>
+                        <h4>Erro ao carregar filmes</h4>
+                        <p>${error.message}</p>
+                        <button onclick="carregarFilmes()" class="btn btn-outline-light mt-3">
+                            Tentar novamente
+                        </button>
+                    </div>
+                `;
+            });
+    }
+
+    // Função para exibir filmes (reutilizável)
+    function exibirFilmes(filmes) {
+        let html = '';
+        filmes.forEach(filme => {
+            html += `
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="filme-item card h-100 bg-dark text-white">
+                        <img src="${filme.capa}" alt="${filme.titulo}" 
+                             class="card-img-top filme-capa" 
+                             style="height: 400px; object-fit: cover;">
+                        <div class="card-body">
+                            <h3 class="card-title">${filme.titulo}</h3>
+                            <p class="card-text"><strong>Sinopse:</strong> ${filme.sinopse}</p>
+                            <p class="text-info"><strong>Categoria:</strong> ${filme.categoria}</p>
+                        </div>
+                        <div class="card-footer bg-transparent">
+                            <a href="${filme.trailer}" target="_blank" 
+                               class="btn btn-danger btn-block">Assistir Trailer</a>
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+        filmesList.innerHTML = html;
+    }
+
+    // Função para carregar categorias
+    function carregarCategorias() {
+        fetch(`${apiUrl}/categorias`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Erro ao carregar categorias');
+                }
+                return response.json();
+            })
+            .then(categorias => {
+                let html = '<div class="d-flex flex-wrap gap-2">';
+                categorias.forEach(categoria => {
+                    html += `
+                        <button onclick="filtrarCategoria('${categoria}')" 
+                                class="btn btn-outline-primary btn-categoria">
+                            ${categoria}
+                        </button>
+                    `;
+                });
+                html += '</div>';
+                categoriasContainer.innerHTML = html;
+            })
+            .catch(error => {
+                console.error('Erro ao carregar categorias:', error);
+                categoriasContainer.innerHTML = `
+                    <div class="alert alert-warning">
+                        Erro ao carregar categorias: ${error.message}
+                    </div>
+                `;
             });
     }
 
@@ -58,70 +114,82 @@ document.addEventListener('DOMContentLoaded', function () {
     window.buscarFilme = function() {
         const termo = document.getElementById('searchBar').value.trim();
         if (termo) {
+            filmesList.innerHTML = '<div class="col-12 text-center"><div class="spinner-border text-primary" role="status"></div></div>';
+            
             fetch(`${apiUrl}/buscar-filme?termo=${encodeURIComponent(termo)}`)
-                .then(response => response.json())
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`Erro: ${response.status}`);
+                    }
+                    return response.json();
+                })
                 .then(data => {
                     if (data.length > 0) {
-                        let html = '';
-                        data.forEach(filme => {
-                            html += `
-                                <div class="col-md-4">
-                                    <div class="filme-item">
-                                        <img src="${filme.capa}" alt="${filme.titulo}" class="img-fluid mb-3">
-                                        <h3>${filme.titulo}</h3>
-                                        <p><strong>Sinopse:</strong> ${filme.sinopse}</p>
-                                        <p><strong>Categoria:</strong> ${filme.categoria}</p>
-                                        <a href="${filme.trailer}" target="_blank" class="btn btn-primary">Assistir Trailer</a>
-                                    </div>
-                                </div>
-                            `;
-                        });
-                        filmesList.innerHTML = html;
+                        exibirFilmes(data);
                     } else {
-                        filmesList.innerHTML = '<p class="text-white">Nenhum filme encontrado com esse termo.</p>';
+                        filmesList.innerHTML = `
+                            <div class="col-12 text-center text-white py-5">
+                                <h4>Nenhum filme encontrado com "${termo}"</h4>
+                                <button onclick="carregarFilmes()" class="btn btn-outline-light mt-3">
+                                    Ver todos os filmes
+                                </button>
+                            </div>
+                        `;
                     }
                 })
                 .catch(error => {
                     console.error('Erro na busca:', error);
-                    filmesList.innerHTML = `<p class="text-white">Erro na busca: ${error.message}</p>`;
+                    filmesList.innerHTML = `
+                        <div class="col-12 text-center text-danger py-5">
+                            <i class="fas fa-exclamation-triangle fa-2x mb-3"></i>
+                            <h4>Erro na busca</h4>
+                            <p>${error.message}</p>
+                        </div>
+                    `;
                 });
         } else {
             carregarFilmes();
         }
     }
 
-    // Função para filtrar por categoria
+    // Função para filtrar por categoria (atualizada com a rota correta)
     window.filtrarCategoria = function(categoria) {
-        fetch(`${apiUrl}/filtrar-filme?categoria=${encodeURIComponent(categoria)}`)
-            .then(response => response.json())
+        filmesList.innerHTML = '<div class="col-12 text-center"><div class="spinner-border text-primary" role="status"></div></div>';
+        
+        fetch(`${apiUrl}/filmes/categoria/${encodeURIComponent(categoria)}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`Erro: ${response.status}`);
+                }
+                return response.json();
+            })
             .then(data => {
                 if (data.length > 0) {
-                    let html = '';
-                    data.forEach(filme => {
-                        html += `
-                            <div class="col-md-4">
-                                <div class="filme-item">
-                                    <img src="${filme.capa}" alt="${filme.titulo}" class="img-fluid mb-3">
-                                    <h3>${filme.titulo}</h3>
-                                    <p><strong>Sinopse:</strong> ${filme.sinopse}</p>
-                                    <p><strong>Categoria:</strong> ${filme.categoria}</p>
-                                    <a href="${filme.trailer}" target="_blank" class="btn btn-primary">Assistir Trailer</a>
-                                </div>
-                            </div>
-                        `;
-                    });
-                    filmesList.innerHTML = html;
+                    exibirFilmes(data);
                 } else {
-                    filmesList.innerHTML = `<p class="text-white">Nenhum filme encontrado na categoria ${categoria}.</p>`;
+                    filmesList.innerHTML = `
+                        <div class="col-12 text-center text-white py-5">
+                            <h4>Nenhum filme encontrado na categoria "${categoria}"</h4>
+                            <button onclick="carregarFilmes()" class="btn btn-outline-light mt-3">
+                                Ver todos os filmes
+                            </button>
+                        </div>
+                    `;
                 }
             })
             .catch(error => {
                 console.error('Erro ao filtrar:', error);
-                filmesList.innerHTML = `<p class="text-white">Erro ao filtrar: ${error.message}</p>`;
+                filmesList.innerHTML = `
+                    <div class="col-12 text-center text-danger py-5">
+                        <i class="fas fa-exclamation-triangle fa-2x mb-3"></i>
+                        <h4>Erro ao filtrar</h4>
+                        <p>${error.message}</p>
+                    </div>
+                `;
             });
     }
 
-    // Carrega os filmes ao iniciar
+    // Carrega os filmes e categorias ao iniciar
     carregarFilmes();
-    
+    carregarCategorias();
 });
