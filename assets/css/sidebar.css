@@ -1,0 +1,75 @@
+/* Estilos da Sidebar */
+#sidebar {
+    width: 250px;
+    min-height: 100vh;
+    position: fixed;
+    left: -250px;
+    top: 0;
+    transition: 0.3s;
+    z-index: 1000;
+    background-color: #1a1a1a;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.5);
+    border-right: 1px solid #ff4757;
+}
+
+#sidebar.show {
+    left: 0;
+}
+
+.sidebar-header {
+    padding: 20px;
+    background-color: #252525;
+    color: white;
+    text-align: center;
+    border-bottom: 1px solid #ff4757;
+}
+
+.sidebar-header img {
+    max-width: 80%;
+    height: auto;
+    margin-bottom: 10px;
+    filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.5));
+}
+
+#sidebar .nav-item {
+    margin: 5px 0;
+}
+
+#sidebar .nav-link {
+    color: #e0e0e0 !important;
+    padding: 10px 15px;
+    border-radius: 5px;
+    transition: all 0.3s;
+    font-weight: 500;
+}
+
+#sidebar .nav-link:hover {
+    background-color: #ff4757;
+    color: white !important;
+    transform: translateX(5px);
+}
+
+.menu-toggle-icon {
+    font-size: 1.5rem;
+    cursor: pointer;
+    position: fixed;
+    left: 15px;
+    top: 15px;
+    z-index: 1001;
+    background: #ff4757;
+    color: white;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    box-shadow: 0 2px 10px rgba(255, 71, 87, 0.7);
+    transition: all 0.3s;
+    border: 1px solid #ff6b81;
+}
+
+.menu-toggle-icon:hover {
+    background: #ff6b81;
+    transform: scale(1.1);
+}
