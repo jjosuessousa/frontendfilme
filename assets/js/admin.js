@@ -9,14 +9,14 @@ document.addEventListener('DOMContentLoaded', function () {
     carregarFilmes();
 
     // Preview da imagem ao selecionar
-    capaInput.addEventListener('change', function() {
+    capaInput.addEventListener('change', function () {
         const file = this.files[0];
         if (file) {
             const reader = new FileReader();
-            reader.onload = function(e) {
+            reader.onload = function (e) {
                 capaPreview.src = e.target.result;
                 capaPreview.style.display = 'block';
-            }
+            };
             reader.readAsDataURL(file);
         }
     });
@@ -64,77 +64,96 @@ document.addEventListener('DOMContentLoaded', function () {
     // Função para cadastrar/atualizar filme
     filmeForm.addEventListener('submit', function (e) {
         e.preventDefault();
-
-        const id = document.getElementById('filme-id').value;
+    
         const titulo = document.getElementById('titulo').value;
         const sinopse = document.getElementById('sinopse').value;
         const trailer = document.getElementById('trailer').value;
         const capa = document.getElementById('capa').files[0];
         const categoria = document.getElementById('categoria').value;
-
+    
+        // Validação do título
         if (!titulo) {
             alert('O título do filme é obrigatório.');
             return;
         }
-
+    
+        // Criação do FormData para enviar os dados
         const formData = new FormData();
         formData.append('titulo', titulo);
         formData.append('sinopse', sinopse);
         formData.append('trailer', trailer);
         if (capa) formData.append('capa', capa);
         formData.append('categoria', categoria);
-
-        const url = id ? `${apiUrl}/atualizar-filme/${id}` : `${apiUrl}/cadastrar-filme`;
-        const method = id ? 'PUT' : 'POST';
-
+    
+        // URL para cadastro de novos filmes
+        const url = `${apiUrl}/cadastrar-filme`;
+    
+        // Requisição POST para cadastrar filme
         fetch(url, {
-            method: method,
+            method: 'POST',
             body: formData,
         })
             .then(response => {
-                if (!response.ok) throw new Error('Erro ao salvar filme.');
+                if (!response.ok) throw new Error('Erro ao cadastrar filme.');
                 return response.json();
             })
             .then(data => {
                 alert(data.message);
-                carregarFilmes();
-                filmeForm.reset();
-                document.getElementById('filme-id').value = '';
-                capaPreview.style.display = 'none';
+                carregarFilmes(); // Atualiza a lista de filmes
+                filmeForm.reset(); // Limpa o formulário
+                capaPreview.style.display = 'none'; // Esconde a prévia da capa
             })
             .catch(error => {
-                console.error('Erro ao salvar filme:', error);
-                alert('Erro ao salvar filme: ' + error.message);
+                console.error('Erro ao cadastrar filme:', error);
+                alert('Erro ao cadastrar filme: ' + error.message);
             });
     });
 
-    // Função para editar filme
-    window.editarFilme = function (id) {
-        fetch(`${apiUrl}/filme/${id}`)
-            .then(response => {
-                if (!response.ok) throw new Error('Erro ao carregar filme.');
-                return response.json();
-            })
-            .then(filme => {
-                document.getElementById('filme-id').value = filme.id;
-                document.getElementById('titulo').value = filme.titulo;
-                document.getElementById('sinopse').value = filme.sinopse;
-                document.getElementById('trailer').value = filme.trailer;
-                document.getElementById('categoria').value = filme.categoria;
-                
+   // Função para editar filme
+window.editarFilme = function (id) {
+    // Mostra um carregando ao usuário enquanto busca os dados
+   
+
+    // Faz a requisição para buscar os dados do filme pelo ID
+    fetch(`${apiUrl}/filme/${id}`)
+        .then(response => {
+            if (!response.ok) {
+                // Caso o servidor retorne erro, lança uma mensagem personalizada
+                throw new Error('Erro ao carregar o filme. Por favor, tente novamente.');
+            }
+            return response.json();
+        })
+        .then(filme => {
+            // Preenche os campos do formulário com os dados do filme
+            document.getElementById('filme-id').value = filme.id || '';
+            document.getElementById('titulo').value = filme.titulo || '';
+            document.getElementById('sinopse').value = filme.sinopse || '';
+            document.getElementById('trailer').value = filme.trailer || '';
+            document.getElementById('categoria').value = filme.categoria || '';
+
+            // Define a visualização da capa, caso exista
+            if (filme.capa) {
                 capaPreview.src = `http://localhost/backend_filme/uploads/${filme.capa}`;
                 capaPreview.style.display = 'block';
-                
-                // Scroll para o formulário
-                document.getElementById('filme-form').scrollIntoView({
-                    behavior: 'smooth'
-                });
-            })
-            .catch(error => {
-                console.error('Erro ao carregar filme:', error);
-                alert('Erro ao carregar filme: ' + error.message);
+            } else {
+                capaPreview.src = '';
+                capaPreview.style.display = 'none';
+            }
+
+            // Rola suavemente para o formulário para melhorar a experiência do usuário
+            document.getElementById('filme-form').scrollIntoView({
+                behavior: 'smooth',
+                block: 'start',
             });
-    };
+
+            alert('Dados do filme carregados com sucesso!');
+        })
+        .catch(error => {
+            // Trata erros de forma amigável
+            console.error('Erro ao carregar filme:', error);
+            alert('Erro ao carregar filme: ' + error.message);
+        });
+};
 
     // Função para deletar filme
     window.deletarFilme = function (id) {

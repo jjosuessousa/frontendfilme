@@ -38,7 +38,14 @@
                 </div>
                 <div class="mb-3">
                     <label for="categoria" class="form-label">Categoria</label>
-                    <input type="text" class="form-control" id="categoria" required>
+                    <select class="form-control" id="categoria" required>
+                        <option value="">Selecione uma categoria</option>
+                        <option value="acao">Ação</option>
+                        <option value="terror">Terror</option>
+                        <option value="drama">Drama</option>
+                        <option value="ficcao">Ficção</option>
+                        <option value="romance">Romance</option>
+                    </select>
                 </div>
             </div>
             <button type="submit" class="btn-save">Salvar Filme</button>
