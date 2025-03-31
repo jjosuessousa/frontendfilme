@@ -20,11 +20,35 @@
     
     <!-- Header -->
     <header class="site-header py-3">
-        <div class="container text-center">
+        <div class="container d-flex justify-content-between align-items-center">
+            <!-- Nome FilmesPVH ao lado da lupa -->
             <h2 class="m-0">FilmesPVH</h2>
+            <div class="input-group mb-3">
+                <input type="text" id="searchBar" class="form-control" placeholder="Buscar filmes...">
+                <button class="btn btn-search" onclick="buscarFilme()">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
         </div>
+        
+        <!-- Filtros no topo -->
+        <div class="text-center mb-4">
+            <button class="btn btn-category mx-2" onclick="filtrarCategoria('acao')">Ação</button>
+            <button class="btn btn-category mx-2" onclick="filtrarCategoria('terror')">Terror</button>
+            <button class="btn btn-category mx-2" onclick="filtrarCategoria('drama')">Drama</button>
+            <button class="btn btn-category mx-2" onclick="filtrarCategoria('ficcao')">Ficção</button>
+            <button class="btn btn-category mx-2" onclick="filtrarCategoria('romance')">Romance</button>
+        </div>
+
+        <!-- Filtros de Séries e Lançamentos -->
+        <div class="text-center mb-4">
+            <button class="btn btn-category mx-2" onclick="filtrarPorTipo('serie')">Séries</button>
+            <button class="btn btn-category mx-2" onclick="filtrarPorTipo('lancamento')">Lançamentos</button>
+        </div>
+        
+        
     </header>
-    
+
     <div class="d-flex">
         <!-- Barra Lateral -->
         <nav id="sidebar" class="p-0">
@@ -44,39 +68,43 @@
         <!-- Conteúdo Principal -->
         <div class="content-wrapper w-100">
             <div class="container" id="main-content">
-                <!-- Barra de Pesquisa -->
-                <div class="mt-4">
-                    <div class="input-group mb-3">
-                        <input type="text" id="searchBar" class="form-control" placeholder="Buscar filmes...">
-                        <button class="btn btn-search" onclick="buscarFilme()">Pesquisar</button>
-                    </div>
-                </div>
-                
-                <!-- Filtros de Categorias -->
-                <div class="text-center mb-4">
-                    <button class="btn btn-category mx-2" onclick="filtrarCategoria('acao')">Ação</button>
-                    <button class="btn btn-category mx-2" onclick="filtrarCategoria('terror')">Terror</button>
-                    <button class="btn btn-category mx-2" onclick="filtrarCategoria('drama')">Drama</button>
-                    <button class="btn btn-category mx-2" onclick="filtrarCategoria('ficcao')">Ficção</button>
-                    <button class="btn btn-category mx-2" onclick="filtrarCategoria('romance')">Romance</button>
-                </div>
-                
-                <!-- Seção Mais Assistidos -->
-                <h2 class="section-title"><i class="fas fa-fire"></i> Mais Assistidos</h2>
-                <div id="mais-assistidos" class="filmes-scroll">
-                    <div class="loading">Carregando...</div>
-                </div>
-                
-                <!-- Seção Lançamentos -->
-                <h2 class="section-title"><i class="fas fa-star"></i> Lançamentos</h2>
-                <div id="lancamentos" class="filmes-scroll">
-                    <div class="loading">Carregando...</div>
-                </div>
-                
                 <!-- Lista Completa de Filmes -->
-                <h1 class="text-center mb-4">Catálogo Completo</h1>
-                <div id="filmes-list" class="row">
-                    <p class="text-center">Carregando filmes...</p>
+                <div id="filmes-list" class="row g-4">
+                    <!-- Filmes -->
+                    <div class="col-md-3">
+                        <div class="filme-card">
+                            <img src="URL_DA_IMAGEM_DO_FILME" alt="Filme">
+                            <h3>Título do Filme</h3>
+                            <p>Descrição breve do filme.</p>
+                            <a href="detalhes_do_filme.html" class="btn btn-primary">Ver Detalhes</a>
+                        </div>
+                    </div>
+                    <!-- Repita a estrutura acima para os outros filmes -->
+                    <div class="col-md-3">
+                        <div class="filme-card">
+                            <img src="URL_DA_IMAGEM_DO_FILME" alt="Filme">
+                            <h3>Título do Filme</h3>
+                            <p>Descrição breve do filme.</p>
+                            <a href="detalhes_do_filme.html" class="btn btn-primary">Ver Detalhes</a>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="filme-card">
+                            <img src="URL_DA_IMAGEM_DO_FILME" alt="Filme">
+                            <h3>Título do Filme</h3>
+                            <p>Descrição breve do filme.</p>
+                            <a href="detalhes_do_filme.html" class="btn btn-primary">Ver Detalhes</a>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="filme-card">
+                            <img src="URL_DA_IMAGEM_DO_FILME" alt="Filme">
+                            <h3>Título do Filme</h3>
+                            <p>Descrição breve do filme.</p>
+                            <a href="detalhes_do_filme.html" class="btn btn-primary">Ver Detalhes</a>
+                        </div>
+                    </div>
+                    <!-- Mais filmes podem ser adicionados aqui -->
                 </div>
             </div>
         </div>

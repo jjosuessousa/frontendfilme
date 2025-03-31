@@ -1,9 +1,9 @@
 /* Estilos da Sidebar */
 #sidebar {
-    width: 250px;
+    width: 200px; /* Ajustado para uma largura menor */
     min-height: 100vh;
     position: fixed;
-    left: -250px;
+    left: -200px; /* Ajustado para refletir a largura reduzida */
     top: 0;
     transition: 0.3s;
     z-index: 1000;
@@ -17,7 +17,7 @@
 }
 
 .sidebar-header {
-    padding: 20px;
+    padding: 15px; /* Reduzido o padding */
     background-color: #252525;
     color: white;
     text-align: center;
@@ -25,7 +25,7 @@
 }
 
 .sidebar-header img {
-    max-width: 80%;
+    max-width: 50%;
     height: auto;
     margin-bottom: 10px;
     filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.5));
@@ -37,10 +37,11 @@
 
 #sidebar .nav-link {
     color: #e0e0e0 !important;
-    padding: 10px 15px;
+    padding: 8px 12px; /* Ajustado o padding */
     border-radius: 5px;
     transition: all 0.3s;
-    font-weight: 500;
+    font-weight: 400; /* Menor peso de fonte */
+    font-size: 0.9rem; /* Diminuído o tamanho da fonte */
 }
 
 #sidebar .nav-link:hover {
@@ -50,7 +51,7 @@
 }
 
 .menu-toggle-icon {
-    font-size: 1.5rem;
+    font-size: 1.2rem; /* Tamanho reduzido do ícone */
     cursor: pointer;
     position: fixed;
     left: 15px;
@@ -58,8 +59,8 @@
     z-index: 1001;
     background: #ff4757;
     color: white;
-    width: 40px;
-    height: 40px;
+    width: 35px; /* Menor tamanho para o botão */
+    height: 35px;
     display: flex;
     align-items: center;
     justify-content: center;
